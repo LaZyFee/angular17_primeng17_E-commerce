@@ -1,0 +1,26 @@
+.product-card {
+    border: 1px solid var(--surface-border);
+}
+
+.product-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+}
+
+.line-height-3 {
+    line-height: 1.5;
+}
+
+/* Custom hover effects */
+@media (min-width: 768px) {
+    .product-card .absolute.inset-0 {
+        backdrop-filter: blur(2px);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .product-card img {
+        height: 10rem;
+    }
+}

@@ -1,0 +1,70 @@
+<div class="layout-topbar flex align-items-center justify-content-between px-4 py-2 bg-white shadow-2">
+    <!-- Menu toggle button -->
+    <button #menubutton class="p-link layout-menu-button layout-topbar-button mr-3"
+        (click)="layoutService.onMenuToggle()">
+        <i class="pi pi-bars text-2xl text-gray-700"></i>
+    </button>
+
+    <!-- Logo -->
+    <a class="layout-topbar-logo flex align-items-center" routerLink="">
+        <img src="assets/logo/logo.jfif" alt="logo" class="w-12rem h-6rem flex-shrink-0" />
+    </a>
+
+    <!-- Search bar -->
+    <span class="p-input-icon-right w-full md:w-30rem mx-3">
+        <i class="pi pi-search text-gray-500"></i>
+        <input pInputText type="text" class="w-full p-3 border-round-lg"
+            placeholder="Search for products (e.g., eggs, milk, potato)" />
+    </span>
+
+    <!-- Right side actions -->
+    <div class="flex align-items-center gap-3">
+        <!-- City dropdown -->
+        <div class="flex align-items-center hover:bg-gray-100 border-round-lg p-2 cursor-pointer">
+            <i class="pi pi-map-marker text-gray-700 mr-2"></i>
+            <p-dropdown [options]="cities" [(ngModel)]="selectedCity" optionLabel="name" placeholder="Select City"
+                styleClass="w-10rem" [panelStyleClass]="'border-round-lg shadow-2'"></p-dropdown>
+        </div>
+
+        <!-- Language toggle button -->
+        <button class="p-link layout-topbar-button hover:bg-gray-100 border-round-lg p-2" (click)="toggleLanguage()"
+            pTooltip="Switch Language" tooltipPosition="bottom">
+            <i class="pi pi-globe text-2xl text-gray-700"></i>
+            <span class="ml-2 text-gray-700">{{ currentLanguage === 'en' ? 'EN' : 'BN' }}</span>
+        </button>
+
+        <!-- Favorites button -->
+        <button class="p-link layout-topbar-button relative hover:bg-gray-100 border-round-lg p-2" pTooltip="Favorites"
+            tooltipPosition="bottom">
+            <i class="pi pi-heart text-2xl text-gray-700"></i>
+            <span *ngIf="favoritesCount > 0"
+                class="p-badge p-component p-badge-danger absolute top-0 right-0">{{favoritesCount}}</span>
+        </button>
+
+        <!-- Cart button -->
+        <button class="p-link layout-topbar-button relative hover:bg-gray-100 border-round-lg p-2" pTooltip="Cart"
+            tooltipPosition="bottom" [routerLink]="'/cart'">
+            <i class="pi pi-shopping-cart text-2xl text-gray-700"></i>
+            <span *ngIf="cartCount > 0"
+                class="p-badge p-component p-badge-danger absolute top-0 right-0">{{cartCount}}</span>
+        </button>
+
+        <!-- User menu -->
+        <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
+            <button class="p-link layout-topbar-button hover:bg-gray-100 border-round-lg p-2" (click)="onLogin()"
+                pTooltip="Login" tooltipPosition="bottom">
+                <i class="pi pi-sign-in text-2xl text-gray-700"></i>
+            </button>
+        </ng-container>
+
+        <ng-template #loggedInTemplate>
+            <p-menu #userMenu [model]="userMenuItems" [popup]="true" styleClass="border-round-lg shadow-2"></p-menu>
+            <button class="p-link layout-topbar-button flex align-items-center hover:bg-gray-100 border-round-lg p-2"
+                (click)="userMenu.toggle($event)">
+                <img src="assets/user/profile.jpg" alt="User Profile"
+                    class="w-2.5rem h-2.5rem border-round-full mr-2" />
+                <i class="pi pi-angle-down text-gray-700"></i>
+            </button>
+        </ng-template>
+    </div>
+</div>
