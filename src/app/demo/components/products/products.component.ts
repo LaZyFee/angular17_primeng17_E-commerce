@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgFor } from '@angular/common'; // ✅ Add this
+import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-products',
