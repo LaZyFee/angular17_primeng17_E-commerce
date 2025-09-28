@@ -1,12 +1,221 @@
-<p-carousel [value]="products" [numVisible]="1" [numScroll]="1" [circular]="true"
-    [responsiveOptions]="responsiveOptions" autoplayInterval="3000">
-    <ng-template let-product pTemplate="item">
-        <div class="border-1 surface-border border-round m-2 p-3">
-            <div class="mb-3">
-                <div class="relative mx-auto">
-                    <img src="{{ product.image }}" [alt]="product.name" class="w-full border-round" />
+<!-- Hero Carousel Section -->
+<div class="hero-carousel-container mb-6">
+    <p-carousel [value]="products" [numVisible]="1" [numScroll]="1" [circular]="true"
+        [responsiveOptions]="responsiveOptions" [autoplayInterval]="3000" [showIndicators]="true"
+        [showNavigators]="true">
+        <ng-template let-product pTemplate="item">
+            <div class="hero-slide relative">
+                <img src="{{ product.image }}" [alt]="product.name"
+                    class="w-full h-20rem md:h-25rem object-cover border-round-lg shadow-3" />
+            </div>
+        </ng-template>
+    </p-carousel>
+</div>
+
+<!-- Flash Sale Countdown Timer -->
+<div
+    class="flash-sale-header mb-6 p-4 bg-gradient-to-r from-red-500 to-orange-500 text-white border-round-lg text-center">
+    <h2 class="text-3xl font-bold mb-3">⚡ FLASH SALE ENDS SOON!</h2>
+    <div class="countdown-timer flex justify-content-center gap-4">
+        <div class="timer-item text-center">
+            <div class="timer-number text-2xl font-bold bg-white text-red-500 px-3 py-2 border-round">
+                {{ getTimeRemaining().hours.toString().padStart(2, '0') }}
+            </div>
+            <div class="timer-label text-sm mt-1">Hours</div>
+        </div>
+        <div class="timer-item text-center">
+            <div class="timer-number text-2xl font-bold bg-white text-red-500 px-3 py-2 border-round">
+                {{ getTimeRemaining().minutes.toString().padStart(2, '0') }}
+            </div>
+            <div class="timer-label text-sm mt-1">Minutes</div>
+        </div>
+        <div class="timer-item text-center">
+            <div class="timer-number text-2xl font-bold bg-white text-red-500 px-3 py-2 border-round">
+                {{ getTimeRemaining().seconds.toString().padStart(2, '0') }}
+            </div>
+            <div class="timer-label text-sm mt-1">Seconds</div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Section -->
+<div class="categories-section mb-8">
+    <div class="flex align-items-center justify-content-between mb-4">
+        <h3 class="text-3xl font-bold m-0">Shop by Category</h3>
+        <p-button label="View All" [routerLink]="['/categories']" icon="pi pi-arrow-right" iconPos="right"
+            styleClass="p-button-outlined p-button-rounded p-button-sm font-semibold text-primary hover:bg-primary hover:text-white transition-colors">
+        </p-button>
+    </div>
+
+    <div class="grid grid-nogutter gap-3">
+        <div class="col-6 md:col-3 lg:col-2 xl:col-2" *ngFor="let category of categories">
+            <div class="category-card p-4 bg-white border-1 surface-border border-round-lg text-center cursor-pointer hover:shadow-3 transition-shadow h-full"
+                (click)="onCategorySelect(category)">
+                <div class="flex flex-column align-items-center gap-3">
+                    <div class="category-icon-wrapper bg-blue-50 p-3 border-round-full">
+                        <i [class]="category.icon" class="text-2xl text-primary"></i>
+                    </div>
+                    <div class="category-name text-lg font-semibold text-900">{{ category.name }}</div>
                 </div>
             </div>
         </div>
-    </ng-template>
-</p-carousel>
+    </div>
+</div>
+
+<!-- Featured Flash Sale Product -->
+<div class="featured-flash-sale mb-8">
+    <h3 class="text-3xl font-bold mb-4">🔥 Featured Flash Deal</h3>
+    <div class="featured-product-card bg-white p-4 border-round-lg shadow-3">
+        <div class="grid">
+            <div class="col-12 md:col-6">
+                <div class="product-image-section">
+                    <div class="main-image-container relative">
+                        <img [src]="flashSaleProductExample.images.primary" [alt]="flashSaleProductExample.name"
+                            class="w-full h-20rem object-cover border-round-lg">
+                        <div
+                            class="discount-badge absolute top-2 right-2 bg-red-500 text-white px-3 py-1 border-round-full font-bold">
+                            -{{ flashSaleProductExample.discountPercentage }}%
+                        </div>
+                    </div>
+
+                    <!-- Thumbnail Gallery -->
+                    <div class="flex justify-content-center gap-2 mt-3">
+                        <img *ngFor="let image of flashSaleProductExample.images.gallery.slice(0, 4)"
+                            [src]="image.replace('w=800&h=600', 'w=100&h=100')"
+                            class="w-3rem h-3rem object-cover border-round cursor-pointer hover:opacity-80 transition-opacity"
+                            (click)="changeMainImage(image)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="product-details p-3">
+                    <div class="brand-name text-primary font-semibold mb-2">{{ flashSaleProductExample.brand }}</div>
+                    <h4 class="text-2xl font-bold mb-3 text-900">{{ flashSaleProductExample.name }}</h4>
+
+                    <!-- Price Section -->
+                    <div class="price-section mb-4">
+                        <span class="current-price text-3xl font-bold text-red-500 mr-3">
+                            ${{ flashSaleProductExample.flashSalePrice }}
+                        </span>
+                        <span class="original-price text-xl text-500 line-through mr-3">
+                            ${{ flashSaleProductExample.originalPrice }}
+                        </span>
+                        <p-tag severity="success"
+                            value="Save ${{ flashSaleProductExample.originalPrice - flashSaleProductExample.flashSalePrice }}"></p-tag>
+                    </div>
+
+                    <!-- Stock Progress -->
+                    <div class="stock-info bg-orange-50 p-3 border-round mb-4">
+                        <div class="flex justify-content-between align-items-center mb-2">
+                            <span class="text-sm text-600">{{ flashSaleProductExample.flashSale.soldQuantity }}
+                                sold</span>
+                            <span class="text-sm text-600">{{ flashSaleProductExample.flashSale.remainingQuantity }}
+                                remaining</span>
+                        </div>
+                        <div class="progress-bar w-full h-1rem bg-gray-200 border-round overflow-hidden">
+                            <div class="progress-fill h-full bg-orange-500 transition-all duration-300"
+                                [style.width.%]="getStockPercentage()">
+                            </div>
+                        </div>
+                        <p class="text-sm text-orange-600 font-semibold mt-2 m-0">🔥 Hurry! Only {{
+                            flashSaleProductExample.flashSale.remainingQuantity }} left!</p>
+                    </div>
+
+                    <!-- Key Features -->
+                    <div class="specifications mb-4">
+                        <h5 class="font-semibold mb-3 text-900">Key Features:</h5>
+                        <div class="grid">
+                            <div class="col-6"
+                                *ngFor="let spec of flashSaleProductExample.specifications | keyvalue | slice:0:4">
+                                <div class="flex align-items-center gap-2 mb-2">
+                                    <i class="pi pi-check-circle text-green-500"></i>
+                                    <span class="text-sm">{{ spec.key }}: {{ spec.value }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons flex gap-3">
+                        <button
+                            class="flex-1 bg-primary text-white py-3 px-4 border-round-lg font-semibold hover:bg-primary-600 transition-colors flex align-items-center justify-content-center gap-2"
+                            (click)="addToCart(flashSaleProductExample)">
+                            <i class="pi pi-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                        <button
+                            class="bg-white text-primary border-1 border-primary py-3 px-4 border-round-lg hover:bg-primary-50 transition-colors"
+                            (click)="addToWishlist(flashSaleProductExample)">
+                            <i class="pi pi-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Flash Sale Products Grid -->
+<div class="flash-sale-grid mb-8">
+    <div class="flex align-items-center justify-content-between mb-4">
+        <h3 class="text-3xl font-bold m-0">⚡ Flash Sale Products</h3>
+        <button class="text-primary font-semibold hover:underline">View All Deals</button>
+    </div>
+
+    <div class="grid">
+        <div class="col-6 md:col-4 lg:col-4" *ngFor="let product of flashSaleProducts">
+            <div
+                class="flash-product-card bg-white border-1 surface-border border-round-lg overflow-hidden cursor-pointer hover:shadow-4 transition-all h-full">
+
+                <!-- Product Image -->
+                <div class="product-image-wrapper relative">
+                    <img src="{{ product.image }}" [alt]="product.name" class="w-full h-12rem object-cover" />
+
+                    <!-- Discount Badge -->
+                    <div
+                        class="discount-badge absolute top-2 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 border-round">
+                        {{ product.discount }}% OFF
+                    </div>
+
+                    <!-- Stock Status -->
+                    <p-tag *ngIf="product.inventoryStatus" [value]="product.inventoryStatus"
+                        [severity]="getSeverity(product.inventoryStatus!)" class="absolute top-2 left-2 text-xs">
+                    </p-tag>
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info p-3">
+                    <h5 class="product-name text-lg font-semibold mb-2 text-900 line-height-3">{{ product.name }}</h5>
+
+                    <!-- Price -->
+                    <div class="price-section mb-3">
+                        <div class="current-price text-xl font-bold text-red-500">
+                            ${{ product.price }}
+                        </div>
+                        <div class="original-price text-sm text-500 line-through">
+                            ${{ product.originalPrice }}
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions flex  justify-content-between gap-3">
+                        <!-- Add to Cart -->
+                        <button
+                            class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold cursor-pointer border-none">
+                            <i class="pi pi-shopping-cart text-lg"></i>
+                            Add to Cart
+                        </button>
+
+                        <!-- Wishlist -->
+                        <button class="flex items-center justify-center p-3 rounded-xl border-none
+           text-orange-500  bg-white shadow-sm hover:scale-105 transition-all duration-200">
+                            <i class="pi pi-heart text-lg"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
