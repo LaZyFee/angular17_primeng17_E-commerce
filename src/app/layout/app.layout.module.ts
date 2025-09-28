@@ -18,6 +18,8 @@ import { AppConfigModule } from './config/config.module';
 import { AppSidebarComponent } from "./app.sidebar.component";
 import { AppLayoutComponent } from "./app.layout.component";
 import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
+
 @NgModule({
     declarations: [
         AppMenuitemComponent,
@@ -40,7 +42,9 @@ import { DropdownModule } from 'primeng/dropdown';
         RippleModule,
         RouterModule,
         AppConfigModule,
-        DropdownModule
+        DropdownModule,
+        ButtonModule
+
 
     ],
     exports: [AppLayoutComponent]

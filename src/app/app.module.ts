@@ -12,7 +12,7 @@ import { IconService } from './demo/service/icon.service';
 import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
 import { RouterModule } from '@angular/router';
-
+import { CarouselModule } from 'primeng/carousel';
 @NgModule({
     declarations: [
         AppComponent, NotfoundComponent
@@ -21,6 +21,7 @@ import { RouterModule } from '@angular/router';
         RouterModule,
         AppRoutingModule,
         AppLayoutModule,
+        CarouselModule,
 
     ],
     providers: [

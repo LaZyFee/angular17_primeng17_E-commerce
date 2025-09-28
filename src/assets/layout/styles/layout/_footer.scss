@@ -6,3 +6,25 @@
     padding-top: 1rem;
     border-top: 1px solid var(--surface-border);
 }
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+.hover-scale:hover {
+    transform: scale(1.1);
+}
+.hover-underline {
+    position: relative;
+}
+.hover-underline::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #ff6b35;
+    transition: width 0.3s ease;
+}
+.hover-underline:hover::after {
+    width: 100%;
+}
