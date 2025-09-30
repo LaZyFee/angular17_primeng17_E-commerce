@@ -1,0 +1,437 @@
+<div class="product-details-container p-4 max-w-6xl mx-auto">
+    <!-- Breadcrumb -->
+    <p-breadcrumb [model]="breadcrumbItems" class="mb-4"></p-breadcrumb>
+
+    <div *ngIf="product" class="flex flex-col lg:flex-row gap-8 mt-5 max-w-7xl mx-auto px-4">
+
+        <!-- Left Column: Product Images -->
+        <div class="flex-1 lg:max-w-lg">
+            <div class="product-images">
+                <div class="main-image mb-4">
+                    <img [src]="selectedImage || product.image" [alt]="product.name"
+                        class="w-full h-96 object-cover rounded-lg shadow-lg">
+                    <div class="image-gallery mt-4 flex gap-2 overflow-x-auto">
+                        <img *ngFor="let img of product.images" [src]="img" [alt]="product.name"
+                            class="w-20 h-20 object-cover rounded cursor-pointer border-2 hover:border-primary transition-all flex-shrink-0"
+                            [class.border-primary]="selectedImage === img" (click)="selectedImage = img">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Product Info -->
+        <div class="flex-1 min-w-0">
+            <div class="product-info">
+                <!-- Product Header -->
+                <div class="">
+                    <p-tag [value]="product.category" styleClass="orange"></p-tag>
+                    <div class="flex justify-content-between align-items-center">
+                        <h1 class="text-3xl font-bold text-gray-800">{{ product.name }}</h1>
+                        <div>
+                            <p-button icon="pi pi-heart" severity="secondary" size="large" [outlined]="!isInWishlist"
+                                [text]="!isInWishlist" (onClick)="toggleWishlist()" pTooltip="Add to Wishlist"
+                                tooltipPosition="top"></p-button>
+
+                            <p-button icon="pi pi-share-alt" severity="secondary" size="large" outlined="true"
+                                (onClick)="shareProduct()" pTooltip="Share Product" tooltipPosition="top"></p-button>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
+
+                    <!-- Rating -->
+                    <div class="flex align-items-center gap-2">
+                        <p-rating [(ngModel)]="product.rating" [readonly]="true" [cancel]="false"
+                            [stars]="5"></p-rating>
+                        <span class="text-sm text-gray-600">({{ product.reviewCount }} reviews)</span>
+                    </div>
+
+                </div>
+                <!-- Colors -->
+                <div class="border-top-1 border-gray-200 mt-2">
+                    <div class="flex align-items-center gap-2 mt-2">
+                        <p class="font-medium m-0">Color:</p>
+                        <div class="flex align-items-center gap-3">
+                            <div *ngFor="let color of product.availableColors"
+                                class="w-8 h-8 rounded-full border cursor-pointer transition transform hover:scale-110"
+                                [ngStyle]="{ 'background-color': color }" [class.ring-2]="selectedColor === color"
+                                [class.ring-primary]="selectedColor === color" (click)="selectedColor = color">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sizes -->
+                <div class="border-top-1 border-gray-200 mt-2">
+                    <div class="flex align-items-center gap-2 mt-2">
+                        <p class="font-medium m-0">Size:</p>
+                        <div class="flex align-items-center gap-2">
+                            <button *ngFor="let size of product.availableSizes" class="px-2 py-1 rounded-lg border-none text-sm font-medium transition 
+               hover:bg-primary hover:text-white" [class.bg-primary]="selectedSize === size"
+                                [class.text-white]="selectedSize === size"
+                                [class.border-primary]="selectedSize === size" (click)="selectedSize = size">
+                                {{ size }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price and Quantity Section -->
+                <div
+                    class="flex justify-content-between border-top-1 border-gray-200 mt-2 flex-column md:flex-row md:align-items-center md:justify-content-between gap-4">
+                    <!-- Price Section -->
+                    <div class="price-section bg-gray-50 rounded-lg">
+                        <div class="flex flex-column mb-2 flex-wrap">
+                            <span class="text-3xl font-bold text-orange-500">${{ product.price }}</span>
+                            <div class="flex gap-3">
+                                <span *ngIf="product.originalPrice > product.price"
+                                    class="text-lg text-gray-500 line-through">
+                                    ${{ product.originalPrice }}
+                                </span>
+                                <p-tag *ngIf="product.discount > 0" [value]="product.discount + '% OFF'"
+                                    severity="success"></p-tag>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Quantity Selector -->
+                    <div class="flex flex-column">
+                        <p class="font-medium m-0">Quantity:</p>
+
+                        <!-- Product Status -->
+                        <div>
+                            <p *ngIf="product.inventoryStatus === 'OUTOFSTOCK'" class="text-sm text-red-600">
+                                Out of Stock
+                            </p>
+                            <p *ngIf="product.inventoryStatus === 'LOWSTOCK'" class="text-sm text-yellow-600">
+                                Only {{ product.stock }} items left!
+                            </p>
+                            <p *ngIf="product.inventoryStatus === 'INSTOCK'" class="text-sm text-orange-500">
+                                ({{ product.stock }} items available)
+                            </p>
+                        </div>
+
+                        <!-- Quantity Input -->
+                        <p-inputNumber [(ngModel)]="selectedQuantity" [min]="1" [max]="product.stock"
+                            [showButtons]="true" buttonLayout="horizontal" inputId="quantity"
+                            decrementButtonIcon="pi pi-minus" incrementButtonIcon="pi pi-plus"
+                            incrementButtonClass="p-button-info" decrementButtonClass="p-button-danger"
+                            [disabled]="product.inventoryStatus !== 'INSTOCK'" class="mt-2"></p-inputNumber>
+                    </div>
+                </div>
+
+                <!-- Quantity and Actions -->
+                <div class="actions-section mt-2">
+                    <!-- Action Buttons -->
+                    <p-button [label]="'Add to Cart (' + selectedQuantity + ')'" icon="pi pi-shopping-cart"
+                        iconPos="center" styleClass="orange w-full" size="large"
+                        [disabled]="product.inventoryStatus !== 'INSTOCK'" (onClick)="addToCart()"></p-button>
+                </div>
+                <!-- Additional Info -->
+                <div class="additional-info p-4 bg-blue-50 rounded-lg mt-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi pi-truck text-orange-500"></i>
+                            <span>Free shipping on orders over $50</span>
+                        </div>
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi pi-refresh text-orange-500"></i>
+                            <span>30-day return policy</span>
+                        </div>
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi pi-shield text-orange-500"></i>
+                            <span>2-year warranty included</span>
+                        </div>
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi pi-phone text-orange-500"></i>
+                            <span>24/7 customer support</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Product Details Tabs -->
+    <div *ngIf="product" class="mt-8">
+        <p-tabView>
+            <!-- Specifications Tab -->
+            <p-tabPanel header="Specifications" leftIcon="pi pi-list">
+                <div class="p-4">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+                            <tbody>
+                                <tr *ngFor="let spec of product.specifications; let i = index"
+                                    class="hover:bg-gray-50 transition" [ngClass]="{ 'bg-gray-50': i % 2 === 0 }">
+                                    <td class="px-4 py-3 font-semibold text-gray-800 border-b border-gray-200 w-1/3">
+                                        <i class="pi pi-check-circle text-orange-500 mr-2"></i>
+                                        {{ spec.key }}
+                                    </td>
+                                    <td class="px-4 py-3 text-gray-600 border-b border-gray-200">
+                                        {{ spec.value }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </p-tabPanel>
+
+
+
+            <!-- Reviews Tab -->
+            <p-tabPanel header="Reviews" leftIcon="pi pi-star">
+                <div class="reviews-section p-6">
+                    <!-- Review Summary -->
+                    <div
+                        class="review-summary mb-8 p-8 bg-gradient-to-br from-orange-50 via-white to-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm">
+                        <div class="flex flex-col md:flex-row align-items-center md:items-start gap-8">
+                            <!-- Average Rating -->
+                            <div
+                                class="text-center md:w-1/4 p-4 bg-white rounded-xl shadow-sm border border-orange-100">
+                                <div
+                                    class="text-5xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent mb-2">
+                                    {{ product.rating }}
+                                </div>
+                                <p-rating [(ngModel)]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
+                                <div class="text-sm text-gray-600 mt-2 font-medium">
+                                    {{ product.reviewCount }} reviews
+                                </div>
+                            </div>
+
+                            <!-- Distribution -->
+                            <div class="flex-1 w-full">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-4">Rating Distribution</h3>
+                                <div *ngFor="let rating of ratingDistribution"
+                                    class="flex align-items-center gap-4 mb-3">
+                                    <span class="text-sm font-semibold text-orange-600 w-12">{{ rating.stars }} <i
+                                            class="pi pi-star-fill text-xs"></i></span>
+                                    <div class="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden shadow-inner">
+                                        <div class="bg-gradient-to-r from-orange-400 to-orange-500 h-3 rounded-full transition-all duration-500 shadow-sm"
+                                            [style.width.%]="rating.percentage">
+                                        </div>
+                                    </div>
+                                    <span class="text-sm text-gray-700 font-medium w-16 text-right">{{ rating.count
+                                        }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Individual Reviews -->
+                    <div class="reviews-list space-y-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex align-items-center gap-2">
+                            <i class="pi pi-comments text-orange-500"></i>
+                            Customer Reviews
+                        </h3>
+                        <div *ngFor="let review of reviews"
+                            class="review-card p-6 bg-white border-2 border-gray-100 rounded-xl shadow-sm hover:shadow-lg hover:border-orange-200 transition-all duration-300">
+                            <div class="flex items-start gap-5">
+                                <p-avatar [label]="review.userName.charAt(0).toUpperCase()" shape="circle" size="large"
+                                    styleClass="bg-gradient-to-br from-orange-500 to-orange-600 text-white text-xl font-bold shadow-md"></p-avatar>
+                                <div class="flex-1">
+                                    <div class="flex align-items-center gap-3 mb-2 flex-wrap">
+                                        <h4 class="font-bold text-gray-800 text-lg">{{ review.userName }}</h4>
+                                        <p-rating [(ngModel)]="review.rating" [readonly]="true" [cancel]="false"
+                                            class="text-sm"></p-rating>
+                                        <span class="text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full">{{
+                                            review.date | date }}</span>
+                                    </div>
+                                    <p class="text-gray-700 leading-relaxed mb-4 text-base">{{ review.comment }}</p>
+                                    <div class="flex align-items-center gap-4 text-sm">
+                                        <div class="flex align-items-center gap-2">
+                                            <p-button icon="pi pi-thumbs-up"
+                                                styleClass="p-button-rounded p-button-sm hover-scale"></p-button>
+                                            <span class="text-gray-600 font-medium">{{ review.helpfulCount }}</span>
+                                        </div>
+                                        <p-button icon="pi pi-reply" label="Reply"
+                                            styleClass="p-button-sm p-button-text p-button-secondary"></p-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Review Button -->
+                    <div
+                        class="text-center mt-10 p-6 bg-gradient-to-r from-orange-50 to-white rounded-xl border border-orange-100">
+                        <p class="text-gray-700 mb-4 font-medium">Share your experience with this product</p>
+                        <p-button label="Write a Review" icon="pi pi-pencil" severity="warning" size="large"
+                            (onClick)="showReviewDialog = true"></p-button>
+                    </div>
+                </div>
+            </p-tabPanel>
+            <!-- Q&A Tab -->
+            <p-tabPanel header="Q&A" leftIcon="pi pi-question-circle">
+                <div class="p-6">
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
+                        <h3 class="text-2xl font-bold mb-3 text-gray-800 flex align-items-center gap-2">
+                            <i class="pi pi-question-circle text-orange-500"></i>
+                            Have Questions?
+                        </h3>
+                        <p class="text-gray-700 mb-6 leading-relaxed">
+                            If you have any questions about this product, feel free to reach out to our customer support
+                            team or check our FAQ section. We're here to help!
+                        </p>
+                        <p-button label="Contact Support" icon="pi pi-envelope" styleClass="orange" size="small"
+                            class="w-4rem" (onClick)="contactSupport()"></p-button>
+                    </div>
+                </div>
+            </p-tabPanel>
+
+            <!-- Shipping & Returns Tab -->
+            <p-tabPanel header="Shipping & Returns" leftIcon="pi pi-truck">
+                <div class="p-6 space-y-6">
+                    <div class="bg-green-50 rounded-lg p-6 border-l-4 border-green-500">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3 flex align-items-center gap-2">
+                            <i class="pi pi-truck text-orange-500"></i>
+                            Shipping Information
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            We offer <span class="font-semibold text-orange-500">free standard shipping</span> on all
+                            orders over $50. Express shipping options available at checkout.
+                        </p>
+                    </div>
+                    <div class="bg-amber-50 rounded-lg p-6 border-l-4 border-amber-500">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3 flex align-items-center gap-2">
+                            <i class="pi pi-refresh text-amber-600"></i>
+                            Returns & Refunds
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            We offer a <span class="font-semibold text-amber-700">30-day return policy</span> for all
+                            orders. Items must be in original condition with tags attached.
+                        </p>
+                    </div>
+                </div>
+            </p-tabPanel>
+
+            <!-- Support Tab -->
+            <p-tabPanel header="Support" leftIcon="pi pi-headphones">
+                <div class="p-6 space-y-6">
+                    <div class="bg-purple-50 rounded-lg p-6 border-l-4 border-purple-500">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3 flex align-items-center gap-2">
+                            <i class="pi pi-headphones text-orange-500"></i>
+                            Customer Support
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            Our support team is available <span class="font-semibold text-orange-500">24/7</span> to
+                            assist you with any inquiries via phone, email, or live chat.
+                        </p>
+                    </div>
+                    <div class="bg-teal-50 rounded-lg p-6 border-l-4 border-teal-500">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3 flex align-items-center gap-2">
+                            <i class="pi pi-shield text-orange-500"></i>
+                            Warranty Information
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            This product comes with a <span class="font-semibold text-orange-500">2-year manufacturer
+                                warranty</span> covering defects in materials and workmanship.
+                        </p>
+                    </div>
+                </div>
+            </p-tabPanel>
+
+            <!-- About the Brand Tab -->
+            <p-tabPanel header="About the Brand" leftIcon="pi pi-building">
+                <div class="p-6 space-y-6">
+                    <div class="bg-rose-50 rounded-lg p-6 border-l-4 border-rose-500">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3 flex align-items-center gap-2">
+                            <i class="pi pi-heart text-rose-600"></i>
+                            Our Story
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            Learn more about our brand and our unwavering commitment to quality, innovation, and
+                            customer satisfaction since our founding.
+                        </p>
+                    </div>
+                    <div class="bg-emerald-50 rounded-lg p-6 border-l-4 border-emerald-500">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3 flex align-items-center gap-2">
+                            <i class="pi pi-globe text-emerald-600"></i>
+                            Sustainability
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            We are dedicated to sustainable practices in all aspects of our business, from eco-friendly
+                            packaging to carbon-neutral shipping.
+                        </p>
+                    </div>
+                </div>
+            </p-tabPanel>
+
+        </p-tabView>
+    </div>
+    <!-- related products -->
+    <div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Related Products</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <app-product-card *ngFor="let relatedProduct of relatedProducts"
+                [product]="relatedProduct"></app-product-card>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="!product" class="loading-state text-center py-12">
+        <p-progressSpinner strokeWidth="3"></p-progressSpinner>
+        <p class="mt-4 text-gray-600">Loading product details...</p>
+    </div>
+
+    <!-- Review Dialog -->
+    <p-dialog header="Write a Review" [(visible)]="showReviewDialog" [modal]="true" [closable]="true"
+        [style]="{width: '550px'}" styleClass="review-dialog">
+        <ng-template pTemplate="header">
+            <div class="w-full">
+                <h3 class="text-xl font-bold text-gray-800 m-0">Write a Review</h3>
+                <p class="text-sm text-gray-500 m-0">Share your experience with this product</p>
+            </div>
+        </ng-template>
+
+        <div class="review-form space-y-6 p-4">
+            <!-- Rating Section -->
+            <div class="bg-gradient-to-r from-orange-50 to-white p-5 rounded-xl border-2 border-orange-100">
+                <label class="block text-base font-semibold mb-3 text-gray-800 flex align-items-center gap-2">
+                    <i class="pi pi-star text-orange-500"></i>
+                    Your Rating
+                </label>
+                <div class="flex align-items-center gap-3">
+                    <p-rating [(ngModel)]="newReview.rating" [cancel]="false" styleClass="large-rating"></p-rating>
+                    <span class="text-2xl font-bold text-orange-600" *ngIf="newReview.rating">
+                        {{ newReview.rating }}/5
+                    </span>
+                </div>
+            </div>
+
+            <!-- Name Input -->
+            <div>
+                <label class="block text-base font-semibold mb-3 text-gray-800 flex align-items-center gap-2">
+                    <i class="pi pi-user text-orange-500"></i>
+                    Your Name
+                </label>
+                <p-inputText [(ngModel)]="newReview.userName" placeholder="Enter your name"
+                    class="w-full custom-input"></p-inputText>
+            </div>
+
+            <!-- Review Textarea -->
+            <div>
+                <label class="block text-base font-semibold mb-3 text-gray-800 flex align-items-center gap-2">
+                    <i class="pi pi-comment text-orange-500"></i>
+                    Your Review
+                </label>
+                <textarea [(ngModel)]="newReview.comment" pInputTextarea
+                    placeholder="Share your thoughts about this product... What did you like or dislike?" rows="5"
+                    class="w-full custom-textarea">
+            </textarea>
+                <div class="text-xs text-gray-500 mt-2">
+                    Minimum 10 characters
+                </div>
+            </div>
+        </div>
+
+        <ng-template pTemplate="footer">
+            <div class="flex justify-end gap-3 p-4 bg-gray-50 border-t border-gray-200 -m-4 mt-6">
+                <p-button label="Cancel" icon="pi pi-times" severity="secondary" outlined="true" styleClass="cancel-btn"
+                    (onClick)="showReviewDialog = false"></p-button>
+                <p-button label="Submit Review" icon="pi pi-check" severity="warning" styleClass="submit-btn"
+                    (onClick)="submitReview()"></p-button>
+            </div>
+        </ng-template>
+    </p-dialog>
+</div>

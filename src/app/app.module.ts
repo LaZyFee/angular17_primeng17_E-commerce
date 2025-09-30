@@ -13,6 +13,7 @@ import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
 import { RouterModule } from '@angular/router';
 import { CarouselModule } from 'primeng/carousel';
+
 @NgModule({
     declarations: [
         AppComponent, NotfoundComponent

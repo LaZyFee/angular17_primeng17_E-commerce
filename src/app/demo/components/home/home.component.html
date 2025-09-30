@@ -12,6 +12,30 @@
     </p-carousel>
 </div>
 
+<!-- Categories Section -->
+<div class="categories-section mb-8">
+    <div class="flex align-items-center justify-content-between mb-4">
+        <h3 class="text-3xl font-bold m-0">Shop by Category</h3>
+        <p-button label="View All" [routerLink]="['/categories']" icon="pi pi-arrow-right" iconPos="right"
+            styleClass="p-button-outlined p-button-rounded p-button-sm font-semibold text-primary hover:bg-primary hover:text-white transition-colors">
+        </p-button>
+    </div>
+
+    <div class="grid grid-nogutter gap-3">
+        <div class="col-3 md:col-3 lg:col-2 xl:col-2" *ngFor="let category of categories">
+            <div class="category-card p-4 bg-white border-1 surface-border border-round-lg text-center cursor-pointer hover:shadow-3 transition-shadow h-full"
+                (click)="onCategorySelect(category)">
+                <div class="flex flex-column align-items-center gap-3">
+                    <div class="category-icon-wrapper bg-blue-50 p-3 border-round-full">
+                        <i [class]="category.icon" class="text-2xl text-primary"></i>
+                    </div>
+                    <div class="category-name text-lg font-semibold text-900">{{ category.name }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Flash Sale Countdown Timer -->
 <div
     class="flash-sale-header mb-6 p-4 bg-gradient-to-r from-red-500 to-orange-500 text-white border-round-lg text-center">
@@ -38,34 +62,11 @@
     </div>
 </div>
 
-<!-- Categories Section -->
-<div class="categories-section mb-8">
-    <div class="flex align-items-center justify-content-between mb-4">
-        <h3 class="text-3xl font-bold m-0">Shop by Category</h3>
-        <p-button label="View All" [routerLink]="['/categories']" icon="pi pi-arrow-right" iconPos="right"
-            styleClass="p-button-outlined p-button-rounded p-button-sm font-semibold text-primary hover:bg-primary hover:text-white transition-colors">
-        </p-button>
-    </div>
-
-    <div class="grid grid-nogutter gap-3">
-        <div class="col-6 md:col-3 lg:col-2 xl:col-2" *ngFor="let category of categories">
-            <div class="category-card p-4 bg-white border-1 surface-border border-round-lg text-center cursor-pointer hover:shadow-3 transition-shadow h-full"
-                (click)="onCategorySelect(category)">
-                <div class="flex flex-column align-items-center gap-3">
-                    <div class="category-icon-wrapper bg-blue-50 p-3 border-round-full">
-                        <i [class]="category.icon" class="text-2xl text-primary"></i>
-                    </div>
-                    <div class="category-name text-lg font-semibold text-900">{{ category.name }}</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Featured Flash Sale Product -->
 <div class="featured-flash-sale mb-8">
     <h3 class="text-3xl font-bold mb-4">🔥 Featured Flash Deal</h3>
     <div class="featured-product-card bg-white p-4 border-round-lg shadow-3">
+
         <div class="grid">
             <div class="col-12 md:col-6">
                 <div class="product-image-section">
@@ -81,17 +82,20 @@
                     <!-- Thumbnail Gallery -->
                     <div class="flex justify-content-center gap-2 mt-3">
                         <img *ngFor="let image of flashSaleProductExample.images.gallery.slice(0, 4)"
-                            [src]="image.replace('w=800&h=600', 'w=100&h=100')"
-                            class="w-3rem h-3rem object-cover border-round cursor-pointer hover:opacity-80 transition-opacity"
-                            (click)="changeMainImage(image)">
+                            [src]="image.replace('w=800&h=600', 'w=100&h=100')" class="w-3rem h-3rem cursor-pointer"
+                            (click)="changeMainImage(image); $event.stopPropagation()">
                     </div>
                 </div>
             </div>
 
             <div class="col-12 md:col-6">
                 <div class="product-details p-3">
-                    <div class="brand-name text-primary font-semibold mb-2">{{ flashSaleProductExample.brand }}</div>
-                    <h4 class="text-2xl font-bold mb-3 text-900">{{ flashSaleProductExample.name }}</h4>
+                    <div class="brand-name text-primary font-semibold mb-2">
+                        {{ flashSaleProductExample.brand }}
+                    </div>
+                    <h4 class="text-2xl font-bold mb-3 text-900">
+                        {{ flashSaleProductExample.name }}
+                    </h4>
 
                     <!-- Price Section -->
                     <div class="price-section mb-4">
@@ -102,24 +106,28 @@
                             ${{ flashSaleProductExample.originalPrice }}
                         </span>
                         <p-tag severity="success"
-                            value="Save ${{ flashSaleProductExample.originalPrice - flashSaleProductExample.flashSalePrice }}"></p-tag>
+                            value="Save ${{ flashSaleProductExample.originalPrice - flashSaleProductExample.flashSalePrice }}">
+                        </p-tag>
                     </div>
 
                     <!-- Stock Progress -->
                     <div class="stock-info bg-orange-50 p-3 border-round mb-4">
                         <div class="flex justify-content-between align-items-center mb-2">
-                            <span class="text-sm text-600">{{ flashSaleProductExample.flashSale.soldQuantity }}
-                                sold</span>
-                            <span class="text-sm text-600">{{ flashSaleProductExample.flashSale.remainingQuantity }}
-                                remaining</span>
+                            <span class="text-sm text-600">
+                                {{ flashSaleProductExample.flashSale.soldQuantity }} sold
+                            </span>
+                            <span class="text-sm text-600">
+                                {{ flashSaleProductExample.flashSale.remainingQuantity }} remaining
+                            </span>
                         </div>
                         <div class="progress-bar w-full h-1rem bg-gray-200 border-round overflow-hidden">
                             <div class="progress-fill h-full bg-orange-500 transition-all duration-300"
                                 [style.width.%]="getStockPercentage()">
                             </div>
                         </div>
-                        <p class="text-sm text-orange-600 font-semibold mt-2 m-0">🔥 Hurry! Only {{
-                            flashSaleProductExample.flashSale.remainingQuantity }} left!</p>
+                        <p class="text-sm text-orange-600 font-semibold mt-2 m-0">
+                            🔥 Hurry! Only {{ flashSaleProductExample.flashSale.remainingQuantity }} left!
+                        </p>
                     </div>
 
                     <!-- Key Features -->
@@ -129,7 +137,7 @@
                             <div class="col-6"
                                 *ngFor="let spec of flashSaleProductExample.specifications | keyvalue | slice:0:4">
                                 <div class="flex align-items-center gap-2 mb-2">
-                                    <i class="pi pi-check-circle text-green-500"></i>
+                                    <i class="pi pi-check-circle text-orange-500"></i>
                                     <span class="text-sm">{{ spec.key }}: {{ spec.value }}</span>
                                 </div>
                             </div>
@@ -139,14 +147,15 @@
                     <!-- Action Buttons -->
                     <div class="action-buttons flex gap-3">
                         <button
-                            class="flex-1 bg-primary text-white py-3 px-4 border-round-lg font-semibold hover:bg-primary-600 transition-colors flex align-items-center justify-content-center gap-2"
-                            (click)="addToCart(flashSaleProductExample)">
+                            class="flex-1 bg-orange-500 text-white py-3 px-4 border-round-lg font-semibold hover:bg-orange-600 transition-colors flex align-items-center justify-content-center gap-2 cursor-pointer border-none"
+                            (click)="$event.stopPropagation(); addToCart(flashSaleProductExample)">
                             <i class="pi pi-shopping-cart"></i>
                             Add to Cart
                         </button>
+
                         <button
-                            class="bg-white text-primary border-1 border-primary py-3 px-4 border-round-lg hover:bg-primary-50 transition-colors"
-                            (click)="addToWishlist(flashSaleProductExample)">
+                            class="bg-white border-1 border-orange-300 text-orange-500 py-3 px-4 border-round-lg hover:bg-orange-500 hover:text-white transition-colors flex align-items-center justify-content-center gap-2 cursor-pointer"
+                            (click)="$event.stopPropagation(); addToWishlist(flashSaleProductExample)">
                             <i class="pi pi-heart"></i>
                         </button>
                     </div>
@@ -154,19 +163,22 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <!-- Flash Sale Products Grid -->
 <div class="flash-sale-grid mb-8">
     <div class="flex align-items-center justify-content-between mb-4">
         <h3 class="text-3xl font-bold m-0">⚡ Flash Sale Products</h3>
-        <button class="text-primary font-semibold hover:underline">View All Deals</button>
+        <p-button label="View All" [routerLink]="['/products']" icon="pi pi-arrow-right" iconPos="right"
+            styleClass="p-button-outlined p-button-rounded p-button-sm font-semibold text-primary hover:bg-primary hover:text-white transition-colors">
+        </p-button>
     </div>
 
     <div class="grid">
         <div class="col-6 md:col-4 lg:col-4" *ngFor="let product of flashSaleProducts">
-            <div
-                class="flash-product-card bg-white border-1 surface-border border-round-lg overflow-hidden cursor-pointer hover:shadow-4 transition-all h-full">
+            <div class="flash-product-card bg-white border-1 surface-border border-round-lg overflow-hidden cursor-pointer hover:shadow-4 transition-all h-full"
+                (click)="viewProductDetails(product)">
 
                 <!-- Product Image -->
                 <div class="product-image-wrapper relative">
@@ -199,7 +211,7 @@
                     </div>
 
                     <!-- Quick Actions -->
-                    <div class="quick-actions flex  justify-content-between gap-3">
+                    <div class="quick-actions flex justify-content-between gap-3">
                         <!-- Add to Cart -->
                         <button
                             class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold cursor-pointer border-none">
@@ -213,7 +225,74 @@
                             <i class="pi pi-heart text-lg"></i>
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Recommended Products Section -->
+<div *ngFor="let section of recommendedProductsData[0].sections" class="recommendation-section mb-8">
+    <div class="flex align-items-center justify-content-between mb-4">
+        <div>
+            <h3 class="text-3xl font-bold m-0">{{ section.title }}</h3>
+            <p class="text-gray-600 mt-2">{{ section.subtitle }}</p>
+        </div>
+        <p-button *ngIf="section.showMoreLink" label="View All" [routerLink]="[section.showMoreLink]"
+            icon="pi pi-arrow-right" iconPos="right"
+            styleClass="p-button-outlined p-button-rounded p-button-sm font-semibold text-primary hover:bg-primary hover:text-white transition-colors">
+        </p-button>
+    </div>
+
+    <div class="grid">
+        <div class="col-12 md:col-6 lg:col-4" *ngFor="let product of section.products">
+            <div class="product-card bg-white p-4 border-round-lg shadow-3 hover:shadow-4 transition-all cursor-pointer"
+                (click)="viewProductDetails(product)">
+                <!-- Product Image -->
+                <div class="relative mb-3">
+                    <img [src]="product.image" [alt]="product.name" class="w-full h-12rem object-cover border-round">
+
+                    <p-tag *ngIf="product.isNew" value="New" severity="info"
+                        class="absolute top-2 right-0 text-xs"></p-tag>
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info">
+                    <div class="brand text-primary font-semibold mb-1">{{ product.brand }}</div>
+                    <h5 class="text-lg font-semibold mb-2 text-900 line-height-3">{{ product.name }}</h5>
+                    <div class="flex align-items-center gap-2 mb-2">
+                        <span class="text-yellow-500">
+                            <i *ngFor="let star of getStarRating(product.rating).split(' ')" [class]="star"></i>
+                        </span>
+                        <span class="text-sm text-gray-500">({{ product.reviewCount }})</span>
+                    </div>
+                    <div class="flex justify-content-between align-items-center mb-2">
+                        <div class="price-section mb-3">
+                            <span class="text-xl font-bold text-red-500">${{ product.price }}</span>
+                            <span *ngIf="product.originalPrice" class="text-gray-500 line-through ml-2">
+                                ${{ product.originalPrice }}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-600 ml-2">({{ product.stockQuantity }} left)</p>
+                    </div>
+                    <p class="text-sm text-blue-600 mb-3">{{ product.recommendationReason }}</p>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <p-tag *ngFor="let tag of product.tags.slice(0, 3)" [value]="tag" severity="info"
+                            styleClass="text-xs"></p-tag>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-2">
+                        <button (click)="addToCart(product)"
+                            class="flex-1 bg-orange-500 text-white py-2 px-4 border-round-lg font-semibold hover:bg-orange-600 transition-colors flex align-items-center justify-content-center gap-2 cursor-pointer border-none">
+                            <i class="pi pi-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                        <button (click)="addToWishlist(product)"
+                            class="bg-white text-orange-500 border-1 border-orange-300 py-2 px-3 border-round-lg hover:bg-orange-100 transition-colors flex align-items-center justify-content-center cursor-pointer">
+                            <i class="pi pi-heart"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
