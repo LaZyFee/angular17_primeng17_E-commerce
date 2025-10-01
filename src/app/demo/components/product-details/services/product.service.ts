@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-// Define FlashSaleProduct interface here if not available elsewhere
 export interface DetailsOfProduct {
   id: string;
   name: string;
@@ -558,14 +557,18 @@ export class ProductService {
   }
 
   getRelatedProducts(category: string | undefined, excludeId: string): DetailsOfProduct[] {
-    if (!category) return [];
+    if (!category) {
+      return this.getAllProducts()
+        .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+        .filter(p => p.id !== excludeId)
+        .slice(0, 4);
+    }
     return this.products
       .filter(p => p.category === category && p.id !== excludeId)
       .slice(0, 4);
   }
 
   getAllProducts(): DetailsOfProduct[] {
-    // Return all products (implement as needed)
-    return [];
+    return [...this.products];
   }
 }

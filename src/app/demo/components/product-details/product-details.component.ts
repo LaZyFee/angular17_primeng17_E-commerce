@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService, DetailsOfProduct } from './services/product.service';
 
-// PrimeNG Modules
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
 import { RatingModule } from 'primeng/rating';

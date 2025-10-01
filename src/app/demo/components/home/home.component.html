@@ -213,18 +213,16 @@
                     <!-- Quick Actions -->
                     <div class="quick-actions flex justify-content-between gap-3">
                         <!-- Add to Cart -->
-                        <button
-                            class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold cursor-pointer border-none">
-                            <i class="pi pi-shopping-cart text-lg"></i>
-                            Add to Cart
-                        </button>
+                        <p-button label="Add to Cart" icon="pi pi-shopping-cart"
+                            styleClass="bg-orange-500 text-white hover:bg-orange-600 border-none rounded-xl px-5 py-3" />
+
 
                         <!-- Wishlist -->
-                        <button class="flex items-center justify-center p-3 rounded-xl border-none
-           text-orange-500  bg-white shadow-sm hover:scale-105 transition-all duration-200">
-                            <i class="pi pi-heart text-lg"></i>
-                        </button>
+                        <p-button icon="pi pi-heart" styleClass="px-3 py-2 rounded-xl" outlined severity="warning">
+                        </p-button>
+
                     </div>
+
                 </div>
             </div>
         </div>
