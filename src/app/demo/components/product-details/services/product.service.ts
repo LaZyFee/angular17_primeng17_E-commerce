@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // Define FlashSaleProduct interface here if not available elsewhere
-export interface FlashSaleProduct {
+export interface DetailsOfProduct {
   id: string;
   name: string;
   image: string;
@@ -24,7 +24,7 @@ export interface FlashSaleProduct {
   providedIn: 'root'
 })
 export class ProductService {
-  flashSaleProducts: FlashSaleProduct[] = [
+  products: DetailsOfProduct[] = [
 
     {
       id: 'fs_prod_001',
@@ -354,12 +354,218 @@ export class ProductService {
           helpfulCount: 245
         }
       ]
+    },
+    {
+      id: 'rec_001',
+      name: 'Apple iPhone 15 Pro Max',
+      image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop',
+      price: 1199.99,
+      originalPrice: 1299.99,
+      discount: 8,
+      inventoryStatus: 'INSTOCK',
+      category: 'Electronics',
+      rating: 4.8,
+      reviewCount: 2547,
+      description: 'The ultimate iPhone with titanium design, A17 Pro chip, and incredible camera system.',
+      availableColors: ['Black', 'Silver', 'Gold'],
+      availableSizes: ['128GB', '256GB', '512GB'],
+      stock: 45,
+      specifications: [
+        { key: 'Chip', value: 'A17 Pro' },
+        { key: 'Material', value: 'Titanium Design' },
+        { key: 'Camera', value: '48MP main, Pro camera system' }
+      ],
+      ratingDistribution: [
+        { stars: 5, count: 2000, percentage: 78 },
+        { stars: 4, count: 400, percentage: 16 },
+        { stars: 3, count: 100, percentage: 4 },
+        { stars: 2, count: 30, percentage: 1 },
+        { stars: 1, count: 17, percentage: 1 }
+      ],
+      reviews: [
+        {
+          userName: 'John Doe',
+          rating: 5,
+          date: new Date('2025-09-01'),
+          comment: 'Best iPhone yet, love the titanium feel!',
+          helpfulCount: 25
+        }
+      ]
+    },
+    {
+      id: 'rec_002',
+      name: 'Sony WH-1000XM5 Headphones',
+      image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&fit=crop',
+      price: 349.99,
+      originalPrice: 399.99,
+      discount: 13,
+      inventoryStatus: 'INSTOCK',
+      category: 'Electronics',
+      rating: 4.7,
+      reviewCount: 1834,
+      description: 'Industry-leading noise cancellation with premium sound quality and all-day comfort.',
+      availableColors: ['Black', 'Silver'],
+      stock: 23,
+      specifications: [
+        { key: 'Noise Cancellation', value: 'Industry-leading ANC' },
+        { key: 'Battery Life', value: '30 hours' },
+        { key: 'Connectivity', value: 'Bluetooth 5.2, USB-C' }
+      ]
+    },
+    {
+      id: 'rec_003',
+      name: 'Apple MacBook Air M2',
+      image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop',
+      price: 1099.99,
+      originalPrice: 1199.99,
+      discount: 8,
+      inventoryStatus: 'INSTOCK',
+      category: 'Electronics',
+      rating: 4.9,
+      reviewCount: 3421,
+      description: 'Supercharged by M2 chip. Up to 18 hours of battery life. Liquid Retina display.',
+      availableColors: ['Silver', 'Space Gray', 'Midnight'],
+      availableSizes: ['256GB', '512GB'],
+      stock: 12,
+      specifications: [
+        { key: 'Chip', value: 'Apple M2' },
+        { key: 'Battery Life', value: 'Up to 18 hours' },
+        { key: 'Display', value: '13.6-inch Liquid Retina' }
+      ]
+    },
+    {
+      id: 'rec_004',
+      name: 'Fitbit Versa 4',
+      image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop',
+      price: 199.99,
+      originalPrice: 229.99,
+      discount: 13,
+      inventoryStatus: 'INSTOCK',
+      category: 'Fitness',
+      rating: 4.5,
+      reviewCount: 987,
+      description: 'Health and fitness smartwatch with built-in GPS, music storage, and 6+ day battery.',
+      availableColors: ['Black', 'Pink', 'Blue'],
+      stock: 34,
+      specifications: [
+        { key: 'Battery Life', value: '6+ days' },
+        { key: 'GPS', value: 'Built-in' },
+        { key: 'Compatibility', value: 'iOS & Android' }
+      ]
+    },
+    {
+      id: 'rec_005',
+      name: 'Nintendo Switch OLED',
+      image: 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop',
+      price: 349.99,
+      originalPrice: 399.99,
+      discount: 12,
+      inventoryStatus: 'INSTOCK',
+      category: 'Gaming',
+      rating: 4.8,
+      reviewCount: 1654,
+      description: '7-inch OLED screen, enhanced audio, wide adjustable stand, and dock with wired LAN port.',
+      availableColors: ['White', 'Neon Red/Blue'],
+      stock: 18,
+      specifications: [
+        { key: 'Display', value: '7-inch OLED' },
+        { key: 'Storage', value: '64GB internal, expandable' }
+      ]
+    },
+    {
+      id: 'rec_006',
+      name: 'Anker PowerCore 10000 Portable Charger',
+      image: 'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400&h=400&fit=crop',
+      price: 29.99,
+      originalPrice: 39.99,
+      discount: 25,
+      inventoryStatus: 'INSTOCK',
+      category: 'Electronics',
+      rating: 4.6,
+      reviewCount: 5234,
+      description: 'Ultra-compact 10000mAh power bank with high-speed charging technology.',
+      availableColors: ['Black'],
+      stock: 156,
+      specifications: [
+        { key: 'Capacity', value: '10000mAh' },
+        { key: 'Output', value: 'PowerIQ, VoltageBoost' }
+      ]
+    },
+    {
+      id: 'rec_007',
+      name: 'Apple AirPods Pro (2nd Gen)',
+      image: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=400&h=400&fit=crop',
+      price: 229.99,
+      originalPrice: 249.99,
+      discount: 8,
+      inventoryStatus: 'INSTOCK',
+      category: 'Electronics',
+      rating: 4.7,
+      reviewCount: 8743,
+      description: 'Adaptive Transparency, Personalized Spatial Audio, and up to 2x more noise cancellation.',
+      availableColors: ['White'],
+      stock: 67,
+      specifications: [
+        { key: 'Chip', value: 'Apple H2' },
+        { key: 'Noise Cancellation', value: '2x better ANC' }
+      ]
+    },
+    {
+      id: 'rec_008',
+      name: 'Amazon Echo Dot (5th Gen)',
+      image: 'https://images.unsplash.com/photo-1543512214-318c7553f230?w=400&h=400&fit=crop',
+      price: 39.99,
+      originalPrice: 49.99,
+      discount: 20,
+      inventoryStatus: 'INSTOCK',
+      category: 'Smart Home',
+      rating: 4.4,
+      reviewCount: 15647,
+      description: 'Smart speaker with bigger vibrant sound, helpful routines, and Alexa built-in.',
+      availableColors: ['Charcoal', 'White', 'Blue'],
+      stock: 234,
+      specifications: [
+        { key: 'Assistant', value: 'Alexa' },
+        { key: 'Speaker', value: 'Improved bass' }
+      ]
+    },
+    {
+      id: 'rec_009',
+      name: 'Samsung 65" 4K QLED Smart TV',
+      image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=400&fit=crop',
+      price: 899.99,
+      originalPrice: 1199.99,
+      discount: 25,
+      inventoryStatus: 'INSTOCK',
+      category: 'Electronics',
+      rating: 4.6,
+      reviewCount: 3241,
+      description: 'Quantum Dot technology, 4K AI upscaling, and smart TV features with multiple streaming apps.',
+      availableColors: ['Black'],
+      stock: 8,
+      specifications: [
+        { key: 'Display', value: '65-inch QLED 4K' },
+        { key: 'Features', value: 'Smart TV, HDR, Quantum Dot' }
+      ]
     }
   ];
 
+
   constructor() { }
 
-  getProductById(id: string) {
-    return this.flashSaleProducts.find(p => p.id === id);
+  getProductById(id: string): DetailsOfProduct | undefined {
+    return this.products.find(p => p.id === id);
+  }
+
+  getRelatedProducts(category: string | undefined, excludeId: string): DetailsOfProduct[] {
+    if (!category) return [];
+    return this.products
+      .filter(p => p.category === category && p.id !== excludeId)
+      .slice(0, 4);
+  }
+
+  getAllProducts(): DetailsOfProduct[] {
+    // Return all products (implement as needed)
+    return [];
   }
 }

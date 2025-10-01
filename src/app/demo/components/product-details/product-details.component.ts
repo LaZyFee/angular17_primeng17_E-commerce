@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { ProductService, FlashSaleProduct } from './services/product.service';
+import { ProductService, DetailsOfProduct } from './services/product.service';
 
 // PrimeNG Modules
 import { BreadcrumbModule } from 'primeng/breadcrumb';
@@ -19,7 +19,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
-
 
 @Component({
   selector: 'app-product-details',
@@ -47,20 +46,19 @@ import { ToastModule } from 'primeng/toast';
 })
 export class ProductDetailsComponent implements OnInit {
   productId!: string;
-  product?: FlashSaleProduct;
+  product?: DetailsOfProduct;
+  selectedColor?: string;
+  selectedSize?: string;
+  selectedImage?: string;
+  selectedQuantity = 1;
+  isInWishlist = false;
 
-  // ✅ Add these missing properties used in template
   breadcrumbItems = [
     { label: 'Home', url: '/' },
     { label: 'Products', url: '/products' },
     { label: 'Details' }
   ];
 
-  selectedImage?: string;
-  selectedQuantity = 1;
-  isInWishlist = false;
-
-  // For reviews dialog
   showReviewDialog = false;
 
   newReview = {
@@ -69,28 +67,29 @@ export class ProductDetailsComponent implements OnInit {
     comment: ''
   };
 
-  reviews = [
-    // example reviews
-    { userName: 'Alice', rating: 5, comment: 'Great product!', date: new Date(), helpfulCount: 3 },
-    { userName: 'Bob', rating: 4, comment: 'Very useful', date: new Date(), helpfulCount: 1 }
-  ];
-
-  ratingDistribution = [
-    { stars: 5, count: 10, percentage: 50 },
-    { stars: 4, count: 5, percentage: 25 },
-    { stars: 3, count: 3, percentage: 15 },
-    { stars: 2, count: 1, percentage: 5 },
-    { stars: 1, count: 1, percentage: 5 }
-  ];
-
-  relatedProducts: FlashSaleProduct[] = []; // example placeholder
+  relatedProducts: DetailsOfProduct[] = [];
 
   constructor(private route: ActivatedRoute, private productService: ProductService) { }
 
   ngOnInit(): void {
     this.productId = this.route.snapshot.paramMap.get('id')!;
     this.product = this.productService.getProductById(this.productId);
-    if (!this.product) console.warn(`Product with ID ${this.productId} not found.`);
+    if (!this.product) {
+      console.warn(`Product with ID ${this.productId} not found.`);
+    } else {
+      // Set default selected image
+      this.selectedImage = this.product.image;
+      // Set default color and size if available
+      this.selectedColor = this.product.availableColors?.[0];
+      this.selectedSize = this.product.availableSizes?.[0];
+      // Populate related products
+      this.relatedProducts = this.productService.getRelatedProducts(this.product.category, this.productId);
+    }
+  }
+
+  // Getter to handle images as array
+  get productImages(): string[] {
+    return this.product?.image ? [this.product.image] : [];
   }
 
   getStatusSeverity(status: string) {
@@ -102,9 +101,18 @@ export class ProductDetailsComponent implements OnInit {
     }
   }
 
-  addToCart() { console.log('Add to cart', this.selectedQuantity); }
-  toggleWishlist() { this.isInWishlist = !this.isInWishlist; }
-  shareProduct() { console.log('Share product'); }
+  addToCart() {
+    console.log('Add to cart', this.selectedQuantity);
+  }
+
+  toggleWishlist() {
+    this.isInWishlist = !this.isInWishlist;
+  }
+
+  shareProduct() {
+    console.log('Share product');
+  }
+
   submitReview() {
     console.log('Submitting review', this.newReview);
     this.showReviewDialog = false;

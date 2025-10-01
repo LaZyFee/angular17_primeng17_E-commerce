@@ -10,10 +10,10 @@ import { ProductDetailsComponent } from './demo/components/product-details/produ
             {
                 path: '', component: AppLayoutComponent,
                 children: [
-                    { path: '', loadChildren: () => import('./demo/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
-                    { path: 'home', loadChildren: () => import('./demo/components/home/home.module').then(m => m.HomeModule) },
+                    { path: '', loadChildren: () => import('./demo/components/home/home.module').then(m => m.HomeModule) },
                     { path: 'products/:id', component: ProductDetailsComponent },
                     { path: 'products', loadChildren: () => import('./demo/components/products/products.module').then(m => m.ProductsModule) },
+                    { path: 'dashboard', loadChildren: () => import('./demo/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
                     { path: 'uikit', loadChildren: () => import('./demo/components/uikit/uikit.module').then(m => m.UIkitModule) },
                     { path: 'utilities', loadChildren: () => import('./demo/components/utilities/utilities.module').then(m => m.UtilitiesModule) },
                     { path: 'documentation', loadChildren: () => import('./demo/components/documentation/documentation.module').then(m => m.DocumentationModule) },

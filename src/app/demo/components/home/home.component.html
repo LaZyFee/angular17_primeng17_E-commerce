@@ -231,70 +231,74 @@
     </div>
 </div>
 
+
 <!-- Recommended Products Section -->
-<div *ngFor="let section of recommendedProductsData[0].sections" class="recommendation-section mb-8">
-    <div class="flex align-items-center justify-content-between mb-4">
-        <div>
-            <h3 class="text-3xl font-bold m-0">{{ section.title }}</h3>
-            <p class="text-gray-600 mt-2">{{ section.subtitle }}</p>
-        </div>
-        <p-button *ngIf="section.showMoreLink" label="View All" [routerLink]="[section.showMoreLink]"
-            icon="pi pi-arrow-right" iconPos="right"
-            styleClass="p-button-outlined p-button-rounded p-button-sm font-semibold text-primary hover:bg-primary hover:text-white transition-colors">
-        </p-button>
-    </div>
-
-    <div class="grid">
-        <div class="col-12 md:col-6 lg:col-4" *ngFor="let product of section.products">
-            <div class="product-card bg-white p-4 border-round-lg shadow-3 hover:shadow-4 transition-all cursor-pointer"
-                (click)="viewProductDetails(product)">
-                <!-- Product Image -->
-                <div class="relative mb-3">
-                    <img [src]="product.image" [alt]="product.name" class="w-full h-12rem object-cover border-round">
-
-                    <p-tag *ngIf="product.isNew" value="New" severity="info"
-                        class="absolute top-2 right-0 text-xs"></p-tag>
+<div class="recommendation-section mb-8">
+    <h3 class="text-3xl font-bold mb-4">Recommended Products</h3>
+    <!-- Group by recommendationType -->
+    <ng-container *ngFor="let type of ['trending', 'personalized', 'frequently_bought', 'bestseller']">
+        <div *ngIf="(recommendedProducts | filterByRecommendationType:type).length > 0" class="mb-6">
+            <div class="flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h4 class="text-2xl font-semibold m-0">{{ type | titlecase }}</h4>
+                    <p class="text-gray-600 mt-2">{{ getTypeSubtitle(type) }}</p>
                 </div>
-
-                <!-- Product Info -->
-                <div class="product-info">
-                    <div class="brand text-primary font-semibold mb-1">{{ product.brand }}</div>
-                    <h5 class="text-lg font-semibold mb-2 text-900 line-height-3">{{ product.name }}</h5>
-                    <div class="flex align-items-center gap-2 mb-2">
-                        <span class="text-yellow-500">
-                            <i *ngFor="let star of getStarRating(product.rating).split(' ')" [class]="star"></i>
-                        </span>
-                        <span class="text-sm text-gray-500">({{ product.reviewCount }})</span>
-                    </div>
-                    <div class="flex justify-content-between align-items-center mb-2">
-                        <div class="price-section mb-3">
-                            <span class="text-xl font-bold text-red-500">${{ product.price }}</span>
-                            <span *ngIf="product.originalPrice" class="text-gray-500 line-through ml-2">
-                                ${{ product.originalPrice }}
-                            </span>
+                <p-button label="View All" [routerLink]="[getTypeLink(type)]" icon="pi pi-arrow-right" iconPos="right"
+                    styleClass="p-button-outlined p-button-rounded p-button-sm font-semibold text-primary hover:bg-primary hover:text-white transition-colors">
+                </p-button>
+            </div>
+            <div class="grid">
+                <div class="col-12 md:col-6 lg:col-4"
+                    *ngFor="let product of recommendedProducts | filterByRecommendationType:type">
+                    <div class="product-card bg-white p-4 border-round-lg shadow-3 hover:shadow-4 transition-all cursor-pointer"
+                        (click)="viewProductDetails(product)">
+                        <!-- Product Image -->
+                        <div class="relative mb-3">
+                            <img [src]="product.image" [alt]="product.name"
+                                class="w-full h-12rem object-cover border-round">
+                            <p-tag *ngIf="product.isNew" value="New" severity="info"
+                                class="absolute top-2 right-0 text-xs"></p-tag>
                         </div>
-                        <p class="text-sm text-gray-600 ml-2">({{ product.stockQuantity }} left)</p>
-                    </div>
-                    <p class="text-sm text-blue-600 mb-3">{{ product.recommendationReason }}</p>
-                    <div class="flex flex-wrap gap-2 mb-3">
-                        <p-tag *ngFor="let tag of product.tags.slice(0, 3)" [value]="tag" severity="info"
-                            styleClass="text-xs"></p-tag>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex gap-2">
-                        <button (click)="addToCart(product)"
-                            class="flex-1 bg-orange-500 text-white py-2 px-4 border-round-lg font-semibold hover:bg-orange-600 transition-colors flex align-items-center justify-content-center gap-2 cursor-pointer border-none">
-                            <i class="pi pi-shopping-cart"></i>
-                            Add to Cart
-                        </button>
-                        <button (click)="addToWishlist(product)"
-                            class="bg-white text-orange-500 border-1 border-orange-300 py-2 px-3 border-round-lg hover:bg-orange-100 transition-colors flex align-items-center justify-content-center cursor-pointer">
-                            <i class="pi pi-heart"></i>
-                        </button>
+                        <!-- Product Info -->
+                        <div class="product-info">
+                            <div class="brand text-primary font-semibold mb-1">{{ product.brand }}</div>
+                            <h5 class="text-lg font-semibold mb-2 text-900 line-height-3">{{ product.name }}</h5>
+                            <div class="flex align-items-center gap-2 mb-2">
+                                <span class="text-yellow-500">
+                                    <i *ngFor="let star of getStarRating(product.rating).split(' ')" [class]="star"></i>
+                                </span>
+                                <span class="text-sm text-gray-500">({{ product.reviewCount }})</span>
+                            </div>
+                            <div class="flex justify-content-between align-items-center mb-2">
+                                <div class="price-section mb-3">
+                                    <span class="text-xl font-bold text-red-500">${{ product.price }}</span>
+                                    <span *ngIf="product.originalPrice" class="text-gray-500 line-through ml-2">
+                                        ${{ product.originalPrice }}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-600 ml-2">({{ product.stockQuantity }} left)</p>
+                            </div>
+                            <p class="text-sm text-blue-600 mb-3">{{ product.recommendationReason }}</p>
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <p-tag *ngFor="let tag of product.tags.slice(0, 3)" [value]="tag" severity="info"
+                                    styleClass="text-xs"></p-tag>
+                            </div>
+                            <!-- Action Buttons -->
+                            <div class="flex gap-2">
+                                <button (click)="addToCart(product)"
+                                    class="flex-1 bg-orange-500 text-white py-2 px-4 border-round-lg font-semibold hover:bg-orange-600 transition-colors flex align-items-center justify-content-center gap-2 cursor-pointer border-none">
+                                    <i class="pi pi-shopping-cart"></i>
+                                    Add to Cart
+                                </button>
+                                <button (click)="addToWishlist(product)"
+                                    class="bg-white text-orange-500 border-1 border-orange-300 py-2 px-3 border-round-lg hover:bg-orange-100 transition-colors flex align-items-center justify-content-center cursor-pointer">
+                                    <i class="pi pi-heart"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </ng-container>
 </div>
